@@ -3162,8 +3162,6 @@ main(int argc, char *argv[])
 			startup_cmd = optarg;
 		else if (c == 'd')
 			log_level = WLR_DEBUG;
-		else if (c == 'v')
-			die("dwl " VERSION);
 		else
 			goto usage;
 	}
