@@ -540,6 +540,10 @@ applyrules(Client *c)
 			}
 		}
 	}
+	if (mon) {
+		c->geom.x = (mon->w.width - c->geom.width) / 2 + mon->m.x;
+		c->geom.y = (mon->w.height - c->geom.height) / 2 + mon->m.y;
+	}
 	setmon(c, mon, newtags);
 }
 
@@ -1621,8 +1625,8 @@ drawbar(Monitor *m)
 		if (c) {
 			drwl_setscheme(m->drw, colors[m == selmon ? SchemeSel : SchemeNorm]);
 			drwl_text(m->drw, x, 0, w - m->drw->font->height / 2, m->b.height, m->lrpad / 2, client_get_title(c), 0);
-			if (c && c->isfloating)
-				drwl_rect(m->drw, x + boxs, boxs, boxw, boxw, 0, 0);
+			//if (c && c->isfloating)
+			//	drwl_rect(m->drw, x + boxs, boxs, boxw, boxw, 0, 0);
 		} else {
 			drwl_setscheme(m->drw, colors[SchemeNorm]);
 			drwl_rect(m->drw, x, 0, w, m->b.height, 1, 1);
@@ -2183,6 +2187,10 @@ mapnotify(struct wl_listener *listener, void *data)
 	 * try to apply rules for them */
 	if ((p = client_get_parent(c))) {
 		c->isfloating = 1;
+		if (p->mon) {
+			c->geom.x = (p->mon->w.width - c->geom.width) / 2 + p->mon->m.x;
+			c->geom.y = (p->mon->w.height - c->geom.height) / 2 + p->mon->m.y;
+		}
 		setmon(c, p->mon, p->tags);
 	} else {
 		applyrules(c);
