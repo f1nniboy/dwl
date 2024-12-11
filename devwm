@@ -1,0 +1,5 @@
+#!/bin/sh
+
+make -B -C ../someblocks
+make -B
+../someblocks/someblocks | ./dwl

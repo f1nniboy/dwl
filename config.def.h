@@ -7,7 +7,8 @@
 /* appearance */
 static const int sloppyfocus			   = 1;	 /* focus follows mouse */
 static const int bypass_surface_visibility = 0;	 /* 1 means idle inhibitors will disable idle tracking even if it's surface isn't visible  */
-static const int smartgaps                 = 0;  /* 1 means no outer gap when there is only one window */
+static const int smartborders              = 1;
+static const int smartgaps                 = 1;  /* 1 means no outer gap when there is only one window */
 static const int monoclegaps               = 0;  /* 1 means outer gaps in monocle layout */
 static const unsigned int borderpx		   = 2;	 /* border pixel of windows */
 static const unsigned int gappih           = 4; /* horiz inner gap between windows */
