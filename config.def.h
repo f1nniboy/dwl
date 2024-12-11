@@ -1,4 +1,5 @@
 /* Taken from https://github.com/djpohly/dwl/issues/466 */
+#include <xkbcommon/xkbcommon-keysyms.h>
 #define COLOR(hex)	  { ((hex >> 24) & 0xFF) / 255.0f, \
 ((hex >> 16) & 0xFF) / 255.0f, \
 ((hex >> 8) & 0xFF) / 255.0f, \
@@ -18,13 +19,13 @@ static const unsigned int gappov           = 4; /* vert outer gap between window
 static const int showbar				   = 1; /* 0 means no bar */
 static const int topbar					   = 1; /* 0 means bottom bar */
 static const char *fonts[]				   = {"Fira Code Nerd Font:size=12"};
-static const float rootcolor[]			   = COLOR(0x000000ff);
+static const float rootcolor[]			   = COLOR(0x11111bff);
 /* This conforms to the xdg-protocol. Set the alpha to zero to restore the old behavior */
 static const float fullscreen_bg[]		   = {0.1f, 0.1f, 0.1f, 1.0f}; /* You can also use glsl colors */
 static uint32_t colors[][3]				   = {
 	/*				 fg			 bg			 border	   */
-	[SchemeNorm] = { 0xcad3f5ff, 0x11111bff, 0x11111bff },
-	[SchemeSel]	 = { 0x11111bff, 0xf38ba8ff, 0xf38ba8ff },
+	[SchemeNorm] = { 0xcad3f5ff, 0x1e1e2eff, 0x1e1e2eff },
+	[SchemeSel]	 = { 0x1e1e2eff, 0xf38ba8ff, 0xf38ba8ff },
 	[SchemeUrg]	 = { 0,			 0,			 0xfab387ff },
 };
 
@@ -33,6 +34,13 @@ static char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 /* logging */
 static int log_level = WLR_ERROR;
+
+/* Autostart */
+static const char *const autostart[] = {
+        //"wbg", "/home/me/.config/wallpapers/romb.png", NULL,
+        NULL /* terminate */
+};
+
 
 /* NOTE: ALWAYS keep a rule declared even if you don't use rules (e.g leave at least one example) */
 static const Rule rules[] = {
@@ -139,43 +147,41 @@ static const char *menucmd[] = { "/home/me/.config/scripts/launcher", NULL };
 static const Key keys[] = {
 	/* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
 	/* modifier					 	key				 	function		argument */
-	{ MODKEY,						XKB_KEY_p,			spawn,			{.v = menucmd} },
-	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_Return,		spawn,			{.v = termcmd} },
-	{ MODKEY,						XKB_KEY_b,			togglebar,		{0} },
-	{ MODKEY,						XKB_KEY_j,			focusstack,		{.i = +1} },
-	{ MODKEY,						XKB_KEY_k,			focusstack,		{.i = -1} },
-	{ MODKEY|WLR_MODIFIER_CTRL, 	XKB_KEY_h,			focusdir,		{.ui = 0} },
-	{ MODKEY|WLR_MODIFIER_CTRL,		XKB_KEY_l,			focusdir,		{.ui = 1} },
-	{ MODKEY|WLR_MODIFIER_CTRL,		XKB_KEY_k,			focusdir,		{.ui = 2} },
-	{ MODKEY|WLR_MODIFIER_CTRL,		XKB_KEY_j,			focusdir,		{.ui = 3} },
-	{ MODKEY,						XKB_KEY_i,			incnmaster,		{.i = +1} },
-	{ MODKEY,						XKB_KEY_d,			incnmaster,		{.i = -1} },
-	{ MODKEY,						XKB_KEY_h,			setmfact,		{.f = -0.05f} },
-	{ MODKEY,						XKB_KEY_l,			setmfact,		{.f = +0.05f} },
-	{ MODKEY,						XKB_KEY_Return,		zoom,			{0} },
-	{ MODKEY,						XKB_KEY_Tab,		view,			{0} },
-	{ MODKEY,						XKB_KEY_q,			killclient,		{0} },
-	{ MODKEY,						XKB_KEY_t,			setlayout,		{.v = &layouts[0]} },
-	{ MODKEY,						XKB_KEY_f,			setlayout,		{.v = &layouts[1]} },
-	{ MODKEY,						XKB_KEY_m,			setlayout,		{.v = &layouts[2]} },
-	{ MODKEY,						XKB_KEY_space,		setlayout,		{0} },
-	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_space,		togglefloating, {0} },
-	{ MODKEY,						XKB_KEY_e,		   togglefullscreen, {0} },
-	{ MODKEY,						XKB_KEY_0,			view,			{.ui = ~0} },
-	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_parenright, tag,			{.ui = ~0} },
-	{ MODKEY,						XKB_KEY_comma,		focusmon,		{.i = WLR_DIRECTION_LEFT} },
-	{ MODKEY,						XKB_KEY_period,		focusmon,		{.i = WLR_DIRECTION_RIGHT} },
-	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_less,		tagmon,			{.i = WLR_DIRECTION_LEFT} },
-	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_greater,	tagmon,			{.i = WLR_DIRECTION_RIGHT} },
+	{ MODKEY,						XKB_KEY_Return,		spawn,				{.v = menucmd} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_Return,		spawn,				{.v = termcmd} },
+	{ MODKEY,						XKB_KEY_b,			togglebar,			{0} },
+	{ MODKEY,						XKB_KEY_Right,		focusstack,			{.i = +1} },
+	{ MODKEY,						XKB_KEY_Left,		focusstack,			{.i = -1} },
+	{ MODKEY|WLR_MODIFIER_CTRL, 	XKB_KEY_h,			focusdir,			{.ui = 0} },
+	{ MODKEY|WLR_MODIFIER_CTRL,		XKB_KEY_l,			focusdir,			{.ui = 1} },
+	{ MODKEY|WLR_MODIFIER_CTRL,		XKB_KEY_k,			focusdir,			{.ui = 2} },
+	{ MODKEY|WLR_MODIFIER_CTRL,		XKB_KEY_j,			focusdir,			{.ui = 3} },
+	{ MODKEY,						XKB_KEY_j,			incnmaster,			{.i = +1} },
+	{ MODKEY,						XKB_KEY_h,			incnmaster,			{.i = -1} },
+	{ MODKEY,						XKB_KEY_k,			setmfact,			{.f = -0.05f} },
+	{ MODKEY,						XKB_KEY_l,			setmfact,			{.f = +0.05f} },
+	{ MODKEY,						XKB_KEY_Return,		zoom,				{0} },
+	{ MODKEY,						XKB_KEY_Tab,		view,				{0} },
+	{ MODKEY,						XKB_KEY_q,			killclient,			{0} },
+	{ MODKEY,						XKB_KEY_t,			setlayout,			{.v = &layouts[0]} },
+	{ MODKEY,						XKB_KEY_space,		setlayout,			{0} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_space,		togglefloating, 	{0} },
+	{ MODKEY,						XKB_KEY_f,			togglefullscreen,	{0} },
+	{ MODKEY,						XKB_KEY_0,			view,				{.ui = ~0} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_parenright, tag,				{.ui = ~0} },
+	{ MODKEY,						XKB_KEY_comma,		focusmon,			{.i = WLR_DIRECTION_LEFT} },
+	{ MODKEY,						XKB_KEY_period,		focusmon,			{.i = WLR_DIRECTION_RIGHT} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_less,		tagmon,				{.i = WLR_DIRECTION_LEFT} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_greater,	tagmon,				{.i = WLR_DIRECTION_RIGHT} },
 	TAGKEYS(		  XKB_KEY_1,	XKB_KEY_exclam,						0),
-	TAGKEYS(		  XKB_KEY_2,	XKB_KEY_at,							1),
-	TAGKEYS(		  XKB_KEY_3,	XKB_KEY_numbersign,					2),
+	TAGKEYS(		  XKB_KEY_2,	XKB_KEY_quotedbl,					1),
+	TAGKEYS(		  XKB_KEY_3,	XKB_KEY_section,					2),
 	TAGKEYS(		  XKB_KEY_4,	XKB_KEY_dollar,						3),
 	TAGKEYS(		  XKB_KEY_5,	XKB_KEY_percent,					4),
 	TAGKEYS(		  XKB_KEY_6,	XKB_KEY_asciicircum,				5),
-	TAGKEYS(		  XKB_KEY_7,	XKB_KEY_ampersand,					6),
-	TAGKEYS(		  XKB_KEY_8,	XKB_KEY_asterisk,					7),
-	TAGKEYS(		  XKB_KEY_9,	XKB_KEY_parenleft,					8),
+	TAGKEYS(		  XKB_KEY_7,	XKB_KEY_slash,						6),
+	TAGKEYS(		  XKB_KEY_8,	XKB_KEY_parenleft,					7),
+	TAGKEYS(		  XKB_KEY_9,	XKB_KEY_parenright,					8),
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_Q,			quit,			{0} },
 
 	/* Ctrl-Alt-Backspace and Ctrl-Alt-Fx used to be handled by X server */
