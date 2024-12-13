@@ -323,6 +323,7 @@ static void locksession(struct wl_listener *listener, void *data);
 static void mapnotify(struct wl_listener *listener, void *data);
 static void maximizenotify(struct wl_listener *listener, void *data);
 static void monocle(Monitor *m);
+static void movestack(const Arg *arg);
 static void motionabsolute(struct wl_listener *listener, void *data);
 static void motionnotify(uint32_t time, struct wlr_input_device *device, double sx,
 		double sy, double sx_unaccel, double sy_unaccel);
@@ -1994,6 +1995,40 @@ monocle(Monitor *m)
 		snprintf(m->ltsymbol, LENGTH(m->ltsymbol), "[%d]", n);
 	if ((c = focustop(m)))
 		wlr_scene_node_raise_to_top(&c->scene->node);
+}
+
+void
+movestack(const Arg *arg)
+{
+    Client *c, *sel = focustop(selmon);
+
+    if (!sel) {
+        return;
+    }
+
+    if (wl_list_length(&clients) <= 1) {
+        return;
+    }
+
+    if (arg->i > 0) {
+        wl_list_for_each(c, &sel->link, link) {
+            if (VISIBLEON(c, selmon) || &c->link == &clients) {
+                break; /* found it */
+            }
+        }
+    } else {
+        wl_list_for_each_reverse(c, &sel->link, link) {
+            if (VISIBLEON(c, selmon) || &c->link == &clients) {
+                break; /* found it */
+            }
+        }
+        /* backup one client */
+        c = wl_container_of(c->link.prev, c, link);
+    }
+
+    wl_list_remove(&sel->link);
+    wl_list_insert(&c->link, &sel->link);
+    arrange(selmon);
 }
 
 void
