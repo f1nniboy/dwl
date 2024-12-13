@@ -35,6 +35,7 @@ static const Layout layouts[] = {
 	{ "[]=",      tile },
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
+	{ NULL,       NULL }, /* terminate */
 };
 
 /* monitors */
@@ -130,8 +131,8 @@ static const Key keys[] = {
 	{ MODKEY,						XKB_KEY_b,						togglebar,			{0} },
 	{ MODKEY,						XKB_KEY_Right,					focusstack,			{.i = +1} },
 	{ MODKEY,						XKB_KEY_Left,					focusstack,			{.i = -1} },
-	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_Left,					movestack,			{.i = +1} },
-	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_Right,					movestack,			{.i = -1} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_Right,					movestack,			{.i = +1} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_Left,					movestack,			{.i = -1} },
 	{ MODKEY,						XKB_KEY_k,						incnmaster,			{.i = +1} },
 	{ MODKEY,						XKB_KEY_l,						incnmaster,			{.i = -1} },
 	{ MODKEY,						XKB_KEY_comma,					setmfact,			{.f = -0.05f} },
@@ -139,7 +140,7 @@ static const Key keys[] = {
 	{ MODKEY,						XKB_KEY_Return,					zoom,				{0} },
 	{ MODKEY,						XKB_KEY_Tab,					view,				{0} },
 	{ MODKEY,						XKB_KEY_q,						killclient,			{0} },
-	{ MODKEY,						XKB_KEY_t,						setlayout,			{.v = &layouts[0]} },
+	{ MODKEY,						XKB_KEY_t,						nextlayout,			{0} },
 	{ MODKEY,						XKB_KEY_c,						togglefloating, 	{0} },
 	{ MODKEY,						XKB_KEY_f,						togglefullscreen,	{0} },
 	//{ MODKEY,						XKB_KEY_x,						movecenter,			{0} },
