@@ -1733,9 +1733,15 @@ handlesig(int signo)
 void
 incnmaster(const Arg *arg)
 {
+	unsigned int n = 0;
+	Client *c;
+
 	if (!arg || !selmon)
 		return;
-	selmon->nmaster = MAX(selmon->nmaster + arg->i, 0);
+	wl_list_for_each(c, &clients, link)
+		if (VISIBLEON(c, selmon) && !c->isfloating && !c->isfullscreen)
+			n++;
+	selmon->nmaster = MIN(MAX(selmon->nmaster + arg->i, 0), n);
 	arrange(selmon);
 }
 
