@@ -1,0 +1,6 @@
+CompileFlags:
+    Add:
+        - "-I/usr/include/wlroots-0.19"
+        - "-I/usr/include/pixman-1"
+        - "-I."
+        - "-DWLR_USE_UNSTABLE"
