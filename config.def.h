@@ -115,6 +115,7 @@ static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TA
 
 /* commands */
 static const char *termcmd[] = { "foot", NULL };
+static const char *lockcmd[] = { "swaylock", NULL };
 static const char *menucmd[] = { "/home/etc/scripts/launcher", NULL };
 static const char *volupcmd[] = { "/home/etc/scripts/vol", "+", NULL };
 static const char *voldowncmd[] = { "/home/etc/scripts/vol", "-", NULL };
@@ -129,12 +130,12 @@ static const Key keys[] = {
 	{ MODKEY,						XKB_KEY_Return,					spawn,				{.v = menucmd} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_Return,					spawn,				{.v = termcmd} },
 	{ MODKEY,						XKB_KEY_b,						togglebar,			{0} },
-	{ MODKEY,						XKB_KEY_Right,					focusstack,			{.i = +1} },
-	{ MODKEY,						XKB_KEY_Left,					focusstack,			{.i = -1} },
-	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_Right,					movestack,			{.i = +1} },
-	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_Left,					movestack,			{.i = -1} },
-	{ MODKEY,						XKB_KEY_k,						incnmaster,			{.i = +1} },
-	{ MODKEY,						XKB_KEY_l,						incnmaster,			{.i = -1} },
+	{ MODKEY,						XKB_KEY_j,						focusstack,			{.i = -1} },
+	{ MODKEY,						XKB_KEY_k,						focusstack,			{.i = +1} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_J,						movestack,			{.i = -1} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_K,						movestack,			{.i = +1} },
+	{ MODKEY,						XKB_KEY_u,						incnmaster,			{.i = +1} },
+	{ MODKEY,						XKB_KEY_i,						incnmaster,			{.i = -1} },
 	{ MODKEY,						XKB_KEY_comma,					setmfact,			{.f = -0.05f} },
 	{ MODKEY,						XKB_KEY_period,					setmfact,			{.f = +0.05f} },
 	{ MODKEY,						XKB_KEY_Return,					zoom,				{0} },
@@ -157,6 +158,7 @@ static const Key keys[] = {
 	{ 0,							XKB_KEY_XF86AudioNext,			spawn,				{.v = playernextcmd} },
 	{ 0,							XKB_KEY_XF86AudioPrev,			spawn,				{.v = playerprevcmd} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_S,						spawn,				{.v = shotcmd} },
+	{ MODKEY,						XKB_KEY_l,						spawn,				{.v = lockcmd} },
 	TAGKEYS(		  XKB_KEY_1,	XKB_KEY_exclam,						0),
 	TAGKEYS(		  XKB_KEY_2,	XKB_KEY_quotedbl,					1),
 	TAGKEYS(		  XKB_KEY_3,	XKB_KEY_section,					2),

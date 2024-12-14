@@ -1383,7 +1383,8 @@ dwl_ipc_manager_bind(struct wl_client *client, void *data, uint32_t version, uin
 
 	zdwl_ipc_manager_v2_send_tags(manager_resource, TAGCOUNT);
 
-	for (unsigned int i = 0; i < LENGTH(layouts); i++)
+	/* -1 to ignore termination marker for nextlayout() */
+	for (unsigned int i = 0; i < LENGTH(layouts) - 1; i++)
 		zdwl_ipc_manager_v2_send_layout(manager_resource, layouts[i].symbol);
 }
 
