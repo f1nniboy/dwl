@@ -51,7 +51,7 @@ static const MonitorRule monrules[] = {
 
 /* keyboard */
 static const struct xkb_rule_names xkb_rules = {
-	.options = NULL,
+	.options = "caps:escape",
 	.layout = "de",
 };
 
@@ -92,7 +92,7 @@ static const uint32_t send_events_mode = LIBINPUT_CONFIG_SEND_EVENTS_ENABLED;
 LIBINPUT_CONFIG_ACCEL_PROFILE_FLAT
 LIBINPUT_CONFIG_ACCEL_PROFILE_ADAPTIVE
 */
-static const enum libinput_config_accel_profile accel_profile = LIBINPUT_CONFIG_ACCEL_PROFILE_FLAT;
+static const enum libinput_config_accel_profile accel_profile = LIBINPUT_CONFIG_ACCEL_PROFILE_ADAPTIVE;
 static const double accel_speed = 0.0;
 
 /* You can choose between:
@@ -115,14 +115,15 @@ static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TA
 
 /* commands */
 static const char *termcmd[] = { "foot", NULL };
-static const char *lockcmd[] = { "swaylock", NULL };
+static const char *powercmd[] = { "/home/etc/scripts/power", NULL };
 static const char *menucmd[] = { "/home/etc/scripts/launcher", NULL };
-static const char *volupcmd[] = { "/home/etc/scripts/vol", "+", NULL };
-static const char *voldowncmd[] = { "/home/etc/scripts/vol", "-", NULL };
+static const char *volupcmd[] = { "/home/etc/scripts/vol", "@DEFAULT_AUDIO_SINK@", "+", NULL };
+static const char *voldowncmd[] = { "/home/etc/scripts/vol", "@DEFAULT_AUDIO_SINK@", "-", NULL };
 static const char *shotcmd[] = { "/home/etc/scripts/screenshot", NULL };
 static const char *playertogglecmd[] = { "/home/etc/scripts/player", "play-pause", NULL };
 static const char *playerprevcmd[] = { "/home/etc/scripts/player", "previous", NULL };
 static const char *playernextcmd[] = { "/home/etc/scripts/player", "next", NULL };
+static const char *togglemiccmd[] = { "/home/etc/scripts/mute", "@DEFAULT_AUDIO_SOURCE@", "toggle", NULL };
 
 static const Key keys[] = {
 	/* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
@@ -136,8 +137,11 @@ static const Key keys[] = {
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_K,						movestack,			{.i = +1} },
 	{ MODKEY,						XKB_KEY_u,						incnmaster,			{.i = +1} },
 	{ MODKEY,						XKB_KEY_i,						incnmaster,			{.i = -1} },
-	{ MODKEY,						XKB_KEY_comma,					setmfact,			{.f = -0.05f} },
-	{ MODKEY,						XKB_KEY_period,					setmfact,			{.f = +0.05f} },
+	{ MODKEY,						XKB_KEY_h,						setmfact,			{.f = -0.05f} },
+	{ MODKEY,						XKB_KEY_l,						setmfact,			{.f = +0.05f} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_H,						setcfact,			{.f = -0.25f} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_L,						setcfact,			{.f = +0.25f} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_M,						setcfact,			{.f = 0.0f} },
 	{ MODKEY,						XKB_KEY_Return,					zoom,				{0} },
 	{ MODKEY,						XKB_KEY_Tab,					view,				{0} },
 	{ MODKEY,						XKB_KEY_q,						killclient,			{0} },
@@ -158,7 +162,7 @@ static const Key keys[] = {
 	{ 0,							XKB_KEY_XF86AudioNext,			spawn,				{.v = playernextcmd} },
 	{ 0,							XKB_KEY_XF86AudioPrev,			spawn,				{.v = playerprevcmd} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_S,						spawn,				{.v = shotcmd} },
-	{ MODKEY,						XKB_KEY_l,						spawn,				{.v = lockcmd} },
+	{ MODKEY,						XKB_KEY_p,						spawn,				{.v = powercmd} },
 	TAGKEYS(		  XKB_KEY_1,	XKB_KEY_exclam,						0),
 	TAGKEYS(		  XKB_KEY_2,	XKB_KEY_quotedbl,					1),
 	TAGKEYS(		  XKB_KEY_3,	XKB_KEY_section,					2),
@@ -180,7 +184,8 @@ static const Key keys[] = {
 };
 
 static const Button buttons[] = {
-	{ MODKEY, BTN_LEFT,   moveresize,     {.ui = CurMove} },
-	{ MODKEY, BTN_MIDDLE, togglefloating, {0} },
-	{ MODKEY, BTN_RIGHT,  moveresize,     {.ui = CurResize} },
+	{ MODKEY,	BTN_LEFT,	moveresize,		{.ui = CurMove} },
+	{ MODKEY,	BTN_MIDDLE,	togglefloating,	{0} },
+	{ MODKEY,	BTN_RIGHT,	moveresize,		{.ui = CurResize} },
+	{ 0,		BTN_EXTRA,	spawn,			{.v = togglemiccmd } },
 };
