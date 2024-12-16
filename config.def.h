@@ -23,19 +23,22 @@ static int log_level = WLR_ERROR;
 
 /* NOTE: ALWAYS keep a rule declared even if you don't use rules (e.g leave at least one example) */
 static const Rule rules[] = {
-	/* app_id             title       tags mask     isfloating   monitor */
+	/* app_id						title	tags mask	isfloating	monitor */
 	/* examples: */
-	{ "Gimp_EXAMPLE",     NULL,       0,            1,           -1 }, /* Start on currently visible tags floating, not tiled */
-	{ "firefox_EXAMPLE",  NULL,       1 << 8,       0,           -1 }, /* Start on ONLY tag "9" */
+	{ "Gimp_EXAMPLE",				NULL,	0,			1,			-1 }, /* Start on currently visible tags floating, not tiled */
+	{ "firefox_EXAMPLE",			NULL,	1 << 8,		0,			-1 }, /* Start on ONLY tag "9" */
+
+	{ "xdg-desktop-portal-gtk",		NULL,	0,			1,			-1 }
 };
 
 /* layout(s) */
 static const Layout layouts[] = {
-	/* symbol     arrange function */
-	{ "[]=",      tilewide },
-	//{ "><>",      NULL },    /* no layout function means floating behavior */
-	//{ "[M]",      monocle },
-	{ NULL,       NULL }, /* terminate */
+	/* symbol		arrange function */
+	{ "[][]=",		tilewide },
+	{ "|M|",		centeredmaster },
+	//{ "><>",		NULL },    /* no layout function means floating behavior */
+	//{ "[M]",		monocle },
+	{ NULL,			NULL }, /* terminate */
 };
 
 /* monitors */
@@ -137,8 +140,8 @@ static const Key keys[] = {
 	{ MODKEY,						XKB_KEY_k,						focusstack,			{.i = +1} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_J,						movestack,			{.i = -1} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_K,						movestack,			{.i = +1} },
-	{ MODKEY,						XKB_KEY_i,						incnmaster,			{.i = +1} },
-	{ MODKEY,						XKB_KEY_o,						incnmaster,			{.i = -1} },
+	{ MODKEY,						XKB_KEY_n,						incnmaster,			{.i = +1} },
+	{ MODKEY,						XKB_KEY_m,						incnmaster,			{.i = -1} },
 	{ MODKEY,						XKB_KEY_h,						setmfact,			{.f = -0.05f} },
 	{ MODKEY,						XKB_KEY_l,						setmfact,			{.f = +0.05f} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_H,						setcfact,			{.f = -0.25f} },
