@@ -32,9 +32,9 @@ static const Rule rules[] = {
 /* layout(s) */
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "[]=",      tile },
-	{ "><>",      NULL },    /* no layout function means floating behavior */
-	{ "[M]",      monocle },
+	{ "[]=",      tilewide },
+	//{ "><>",      NULL },    /* no layout function means floating behavior */
+	//{ "[M]",      monocle },
 	{ NULL,       NULL }, /* terminate */
 };
 
@@ -46,7 +46,7 @@ static const Layout layouts[] = {
 /* NOTE: ALWAYS add a fallback rule, even if you are completely sure it won't be used */
 static const MonitorRule monrules[] = {
 	/* name	mfact	nmaster	scale	layout			rotate/reflect				x	y */
-	{ NULL,	0.6f,	1,		1,		&layouts[0],	WL_OUTPUT_TRANSFORM_NORMAL,	-1,	-1 },
+	{ NULL,	0.75f,	1,		1,		&layouts[0],	WL_OUTPUT_TRANSFORM_NORMAL,	-1,	-1 },
 };
 
 /* keyboard */
@@ -92,7 +92,7 @@ static const uint32_t send_events_mode = LIBINPUT_CONFIG_SEND_EVENTS_ENABLED;
 LIBINPUT_CONFIG_ACCEL_PROFILE_FLAT
 LIBINPUT_CONFIG_ACCEL_PROFILE_ADAPTIVE
 */
-static const enum libinput_config_accel_profile accel_profile = LIBINPUT_CONFIG_ACCEL_PROFILE_ADAPTIVE;
+static const enum libinput_config_accel_profile accel_profile = LIBINPUT_CONFIG_ACCEL_PROFILE_FLAT;
 static const double accel_speed = 0.0;
 
 /* You can choose between:
@@ -102,7 +102,9 @@ LIBINPUT_CONFIG_TAP_MAP_LMR -- 1/2/3 finger tap maps to left/middle/right
 static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TAP_MAP_LRM;
 
 /* If you want to use the windows key for MODKEY, use WLR_MODIFIER_LOGO */
-#define MODKEY WLR_MODIFIER_LOGO
+#ifndef MODKEY
+#       define MODKEY WLR_MODIFIER_LOGO
+#endif
 
 #define TAGKEYS(KEY,SKEY,TAG) \
 	{ MODKEY,                    KEY,            view,            {.ui = 1 << TAG} }, \
@@ -135,8 +137,8 @@ static const Key keys[] = {
 	{ MODKEY,						XKB_KEY_k,						focusstack,			{.i = +1} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_J,						movestack,			{.i = -1} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_K,						movestack,			{.i = +1} },
-	{ MODKEY,						XKB_KEY_u,						incnmaster,			{.i = +1} },
-	{ MODKEY,						XKB_KEY_i,						incnmaster,			{.i = -1} },
+	{ MODKEY,						XKB_KEY_i,						incnmaster,			{.i = +1} },
+	{ MODKEY,						XKB_KEY_o,						incnmaster,			{.i = -1} },
 	{ MODKEY,						XKB_KEY_h,						setmfact,			{.f = -0.05f} },
 	{ MODKEY,						XKB_KEY_l,						setmfact,			{.f = +0.05f} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_H,						setcfact,			{.f = -0.25f} },

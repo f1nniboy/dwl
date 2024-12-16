@@ -1,0 +1,50 @@
+From ec6a6a4fe56ef5bdf45633966345f0d0338776d5 Mon Sep 17 00:00:00 2001
+From: Abanoub <abanoubsameh@protonmail.com>
+Date: Fri, 19 Jan 2024 21:42:42 +0200
+Subject: [PATCH] Add the ability to define a MODKEY as a make argument
+
+---
+ Makefile     | 6 +++++-
+ config.def.h | 4 +++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 0822ddc..d169a97 100644
+--- a/Makefile
++++ b/Makefile
+@@ -13,6 +13,10 @@ PKGS      = wlroots wayland-server xkbcommon libinput $(XLIBS)
+ DWLCFLAGS = `$(PKG_CONFIG) --cflags $(PKGS)` $(DWLCPPFLAGS) $(DWLDEVCFLAGS) $(CFLAGS)
+ LDLIBS    = `$(PKG_CONFIG) --libs $(PKGS)` $(LIBS)
+ 
++ifneq ($(MODKEY),)
++MODKEYVAL = -DMODKEY=$(MODKEY)
++endif
++
+ all: dwl
+ dwl: dwl.o util.o
+ 	$(CC) dwl.o util.o $(LDLIBS) $(LDFLAGS) $(DWLCFLAGS) -o $@
+@@ -63,4 +67,4 @@ uninstall:
+ 
+ .SUFFIXES: .c .o
+ .c.o:
+-	$(CC) $(CPPFLAGS) $(DWLCFLAGS) -c $<
++	$(CC) $(CPPFLAGS) $(DWLCFLAGS) $(MODKEYVAL) -c $<
+diff --git a/config.def.h b/config.def.h
+index 9009517..b1e53cd 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -102,7 +102,9 @@ LIBINPUT_CONFIG_TAP_MAP_LMR -- 1/2/3 finger tap maps to left/middle/right
+ static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TAP_MAP_LRM;
+ 
+ /* If you want to use the windows key for MODKEY, use WLR_MODIFIER_LOGO */
+-#define MODKEY WLR_MODIFIER_ALT
++#ifndef MODKEY
++#       define MODKEY WLR_MODIFIER_ALT
++#endif
+ 
+ #define TAGKEYS(KEY,SKEY,TAG) \
+ 	{ MODKEY,                    KEY,            view,            {.ui = 1 << TAG} }, \
+-- 
+2.43.0
+
+

@@ -16,6 +16,10 @@ PKGS      = wayland-server xkbcommon libinput $(XLIBS)
 DWLCFLAGS = `$(PKG_CONFIG) --cflags $(PKGS)` $(WLR_INCS) $(DWLCPPFLAGS) $(DWLDEVCFLAGS) $(CFLAGS)
 LDLIBS    = `$(PKG_CONFIG) --libs $(PKGS)` $(WLR_LIBS) -lm $(LIBS)
 
+ifneq ($(MODKEY),)
+MODKEYVAL = -DMODKEY=$(MODKEY)
+endif
+
 all: dwl
 dwl: dwl.o util.o dwl-ipc-unstable-v2-protocol.o
 	$(CC) dwl.o util.o dwl-ipc-unstable-v2-protocol.o $(DWLCFLAGS) $(LDFLAGS) $(LDLIBS) -o $@
@@ -84,4 +88,4 @@ uninstall:
 
 .SUFFIXES: .c .o
 .c.o:
-	$(CC) $(CPPFLAGS) $(DWLCFLAGS) -o $@ -c $<
+	$(CC) $(CPPFLAGS) $(DWLCFLAGS) $(MODKEYVAL) -o $@ -c $<
