@@ -35,9 +35,6 @@ static const Rule rules[] = {
 static const Layout layouts[] = {
 	/* symbol		arrange function */
 	{ "[]=",		tilewide },
-	{ "|M|",		centeredmaster },
-	//{ "><>",		NULL },    /* no layout function means floating behavior */
-	//{ "[M]",		monocle },
 	{ NULL,			NULL }, /* terminate */
 };
 
