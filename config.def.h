@@ -34,7 +34,7 @@ static const Rule rules[] = {
 /* layout(s) */
 static const Layout layouts[] = {
 	/* symbol		arrange function */
-	{ "[][]=",		tilewide },
+	{ "[]=",		tilewide },
 	{ "|M|",		centeredmaster },
 	//{ "><>",		NULL },    /* no layout function means floating behavior */
 	//{ "[M]",		monocle },
@@ -125,10 +125,11 @@ static const char *menucmd[] = { "/home/etc/scripts/launcher", NULL };
 static const char *volupcmd[] = { "/home/etc/scripts/vol", "@DEFAULT_AUDIO_SINK@", "+", NULL };
 static const char *voldowncmd[] = { "/home/etc/scripts/vol", "@DEFAULT_AUDIO_SINK@", "-", NULL };
 static const char *shotcmd[] = { "/home/etc/scripts/screenshot", NULL };
+static const char *replaycmd[] = { "/home/etc/scripts/save-replay", NULL };
 static const char *playertogglecmd[] = { "/home/etc/scripts/player", "play-pause", NULL };
 static const char *playerprevcmd[] = { "/home/etc/scripts/player", "previous", NULL };
 static const char *playernextcmd[] = { "/home/etc/scripts/player", "next", NULL };
-static const char *togglemiccmd[] = { "/home/etc/scripts/mute", "@DEFAULT_AUDIO_SOURCE@", "toggle", NULL };
+static const char *togglemiccmd[] = { "/home/etc/scripts/mute", "@DEFAULT_AUDIO_SOURCE@", NULL };
 
 static const Key keys[] = {
 	/* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
@@ -147,7 +148,7 @@ static const Key keys[] = {
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_H,						setcfact,			{.f = -0.25f} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_L,						setcfact,			{.f = +0.25f} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_M,						setcfact,			{.f = 0.0f} },
-	{ MODKEY,						XKB_KEY_Return,					zoom,				{0} },
+	{ MODKEY,						XKB_KEY_space,					zoom,				{0} },
 	{ MODKEY,						XKB_KEY_Tab,					view,				{0} },
 	{ MODKEY,						XKB_KEY_q,						killclient,			{0} },
 	{ MODKEY,						XKB_KEY_t,						nextlayout,			{0} },
@@ -167,6 +168,7 @@ static const Key keys[] = {
 	{ 0,							XKB_KEY_XF86AudioNext,			spawn,				{.v = playernextcmd} },
 	{ 0,							XKB_KEY_XF86AudioPrev,			spawn,				{.v = playerprevcmd} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_S,						spawn,				{.v = shotcmd} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_R,						spawn,				{.v = replaycmd} },
 	{ MODKEY,						XKB_KEY_p,						spawn,				{.v = powercmd} },
 	TAGKEYS(		  XKB_KEY_1,	XKB_KEY_exclam,						0),
 	TAGKEYS(		  XKB_KEY_2,	XKB_KEY_quotedbl,					1),
