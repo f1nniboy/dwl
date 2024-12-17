@@ -701,8 +701,10 @@ centeredmaster(Monitor *m)
 
 	if (n > m->nmaster) {
 		/* go mfact box in the center if more than nmaster clients */
-		mw = round(m->nmaster ? m->w.width * m->mfact : 0);
+		mw = m->nmaster ? m->w.width * m->mfact : 0;
 		tw = m->w.width - mw;
+
+		printf("%f, %d\n", m->w.width * m->mfact, mw);
 
 		if (n - m->nmaster > 1) {
 			/* only one client */
@@ -718,12 +720,14 @@ centeredmaster(Monitor *m)
 		if (!VISIBLEON(c, m) || c->isfloating || c->isfullscreen)
 			continue;
 		if (i < m->nmaster) {
-			/* nmaster clients are stacked vertically, in the center
+			/* nmaster clients are stacked horizontally, in the center
 			 * of the screen */
-			h = (m->w.height - my) / (MIN(n, m->nmaster) - i);
-			resize(c, (struct wlr_box){.x = m->w.x + mx, .y = m->w.y + my, .width = mw,
-				   .height = h}, 0, drawborders);
-			my += c->geom.height;
+			// / (MIN(n, m->nmaster) - i)
+			// (mw - mx) / (MIN(n, m->nmaster) - i
+			resize(c, (struct wlr_box){.x = m->w.x + mx, .y = m->w.y + my, .width = mw / MIN(n, m->nmaster),
+				   .height = m->w.height}, 0, drawborders);
+			mx += c->geom.width;
+
 		} else {
 			/* stack clients are stacked vertically */
 			if ((i - m->nmaster) % 2) {
@@ -737,6 +741,8 @@ centeredmaster(Monitor *m)
 					.height = h}, 0, drawborders);
 				oty += c->geom.height;
 			}
+			mx += c->geom.width;
+
 		}
 		i++;
 	}
@@ -1818,7 +1824,7 @@ incnmaster(const Arg *arg)
 	wl_list_for_each(c, &clients, link)
 		if (VISIBLEON(c, selmon) && !c->isfloating && !c->isfullscreen)
 			n++;
-	selmon->nmaster = MIN(MAX(selmon->nmaster + arg->i, 0), n);
+	selmon->nmaster = MIN(MIN(MAX(selmon->nmaster + arg->i, 0), n), 4);
 	arrange(selmon);
 }
 
@@ -3062,8 +3068,7 @@ tilewide(Monitor *m)
 		drawborders = 0;
 
 	if (n > m->nmaster)
-		//mw = m->nmaster ? (int)roundf(m->w.width * m->mfact) : 0;
-		mw = m->nmaster ? m->w.width * m->mfact : 0;
+		mw = m->nmaster ? (int)(m->w.width * m->mfact) : 0;
 	else
 		mw = m->w.width;
 	i = 0;
