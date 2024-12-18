@@ -15,6 +15,13 @@ static const float urgentcolor[]			= COLOR(0xfab387ff);
 /* This conforms to the xdg-protocol. Set the alpha to zero to restore the old behavior */
 static const float fullscreen_bg[]			= {0.1f, 0.1f, 0.1f, 1.0f}; /* You can also use glsl colors */
 
+enum {
+    VIEW_L = -1,
+    VIEW_R = 1,
+    SHIFT_L = -2,
+    SHIFT_R = 2,
+} RotateTags;
+
 /* tagging - TAGCOUNT must be no greater than 31 */
 #define TAGCOUNT (9)
 
@@ -151,7 +158,10 @@ static const Key keys[] = {
 	{ MODKEY,						XKB_KEY_t,						nextlayout,			{0} },
 	{ MODKEY,						XKB_KEY_c,						togglefloating, 	{0} },
 	{ MODKEY,						XKB_KEY_f,						togglefullscreen,	{0} },
-	//{ MODKEY,						XKB_KEY_x,						movecenter,			{0} },
+	{ MODKEY,						XKB_KEY_a,						rotatetags,			{.i = VIEW_L} },
+	{ MODKEY,						XKB_KEY_d,						rotatetags,			{.i = VIEW_R} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_A,						rotatetags,			{.i = SHIFT_L} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_D,						rotatetags,			{.i = SHIFT_R} },
 	{ MODKEY,						XKB_KEY_0,						view,				{.ui = ~0} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_parenright, 			tag,				{.ui = ~0} },
 	{ MODKEY,						XKB_KEY_comma,					focusmon,			{.i = WLR_DIRECTION_LEFT} },
@@ -176,6 +186,7 @@ static const Key keys[] = {
 	TAGKEYS(		  XKB_KEY_7,	XKB_KEY_slash,						6),
 	TAGKEYS(		  XKB_KEY_8,	XKB_KEY_parenleft,					7),
 	TAGKEYS(		  XKB_KEY_9,	XKB_KEY_parenright,					8),
+
 
 	/* Ctrl-Alt-Backspace and Ctrl-Alt-Fx used to be handled by X server */
 	{ WLR_MODIFIER_CTRL|WLR_MODIFIER_ALT,XKB_KEY_Terminate_Server, quit, {0} },
