@@ -136,6 +136,7 @@ typedef struct {
 #ifdef XWAYLAND
 	struct wl_listener activate;
 	struct wl_listener associate;
+	struct wl_listener minimize;
 	struct wl_listener dissociate;
 	struct wl_listener configure;
 	struct wl_listener set_hints;
@@ -447,6 +448,7 @@ static void configurex11(struct wl_listener *listener, void *data);
 static void createnotifyx11(struct wl_listener *listener, void *data);
 static void dissociatex11(struct wl_listener *listener, void *data);
 static xcb_atom_t getatom(xcb_connection_t *xc, const char *name);
+static void minimizenotify(struct wl_listener *listener, void *data);
 static void sethints(struct wl_listener *listener, void *data);
 static void xwaylandready(struct wl_listener *listener, void *data);
 static struct wlr_xwayland *xwayland;
@@ -1307,6 +1309,7 @@ destroynotify(struct wl_listener *listener, void *data)
 		wl_list_remove(&c->activate.link);
 		wl_list_remove(&c->associate.link);
 		wl_list_remove(&c->configure.link);
+		wl_list_remove(&c->minimize.link);
 		wl_list_remove(&c->dissociate.link);
 		wl_list_remove(&c->set_hints.link);
 	} else
@@ -3456,6 +3459,7 @@ createnotifyx11(struct wl_listener *listener, void *data)
 	LISTEN(&xsurface->events.destroy, &c->destroy, destroynotify);
 	LISTEN(&xsurface->events.dissociate, &c->dissociate, dissociatex11);
 	LISTEN(&xsurface->events.request_activate, &c->activate, activatex11);
+	LISTEN(&xsurface->events.request_minimize, &c->minimize, minimizenotify);
 	LISTEN(&xsurface->events.request_configure, &c->configure, configurex11);
 	LISTEN(&xsurface->events.request_fullscreen, &c->fullscreen, fullscreennotify);
 	LISTEN(&xsurface->events.set_hints, &c->set_hints, sethints);
@@ -3481,6 +3485,21 @@ getatom(xcb_connection_t *xc, const char *name)
 	free(reply);
 
 	return atom;
+}
+
+void
+minimizenotify(struct wl_listener *listener, void *data)
+{
+	Client *c = wl_container_of(listener, c, minimize);
+	struct wlr_xwayland_surface *xsurface = c->surface.xwayland;
+	struct wlr_xwayland_minimize_event *e = data;
+	int focused;
+
+	if (xsurface->surface == NULL || !xsurface->surface->mapped)
+		return;
+
+	focused = seat->keyboard_state.focused_surface == xsurface->surface;
+	wlr_xwayland_surface_set_minimized(xsurface, !focused && e->minimize);
 }
 
 void
