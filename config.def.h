@@ -38,6 +38,7 @@ static const Rule rules[] = {
 	{ "xdg-desktop-portal-gtk",		NULL,						0,			1,			-1 },
 	{ NULL,							"Steam-Einstellungen",		0,			1,			-1 },
 	{ "firefox",					"Library",					0,			1,			-1 },
+	{ "Pinentry-gtk",				NULL,						0,			1,			-1 },
 };
 
 /* layout(s) */
@@ -130,13 +131,13 @@ static const char *powercmd[] = { "/home/etc/scripts/power", NULL };
 static const char *menucmd[] = { "/home/etc/scripts/launcher", NULL };
 static const char *clipcopycmd[] = { "/home/etc/scripts/clipboard", "copy", NULL };
 static const char *clipdelcmd[] = { "/home/etc/scripts/clipboard", "delete", NULL };
-static const char *volupcmd[] = { "/home/etc/scripts/vol", "@DEFAULT_AUDIO_SINK@", "+", NULL };
-static const char *voldowncmd[] = { "/home/etc/scripts/vol", "@DEFAULT_AUDIO_SINK@", "-", NULL };
+static const char *volupcmd[] = { "/home/etc/scripts/volume", "@DEFAULT_AUDIO_SINK@", "+", NULL };
+static const char *voldowncmd[] = { "/home/etc/scripts/volume", "@DEFAULT_AUDIO_SINK@", "-", NULL };
 static const char *shotcmd[] = { "/home/etc/scripts/screenshot", NULL };
 static const char *replaycmd[] = { "/home/etc/scripts/save-replay", NULL };
 static const char *playertogglecmd[] = { "/home/etc/scripts/player", "play-pause", NULL };
-static const char *playerprevcmd[] = { "/home/etc/scripts/player", "previous", NULL };
-static const char *playernextcmd[] = { "/home/etc/scripts/player", "next", NULL };
+static const char *playerprevcmd[] = { "playerctl", "previous", NULL };
+static const char *playernextcmd[] = { "playerctl", "next", NULL };
 static const char *togglemiccmd[] = { "/home/etc/scripts/mute", "@DEFAULT_AUDIO_SOURCE@", NULL };
 static const char *notifactioncmd[] = { "makoctl", "menu", "/home/etc/scripts/handle-notif", NULL };
 static const char *notifdismisscmd[] = { "makoctl", "dismiss", NULL };
