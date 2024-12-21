@@ -30,12 +30,14 @@ static int log_level = WLR_ERROR;
 
 /* NOTE: ALWAYS keep a rule declared even if you don't use rules (e.g leave at least one example) */
 static const Rule rules[] = {
-	/* app_id						title	tags mask	isfloating	monitor */
+	/* app_id						title						tags mask	isfloating	monitor */
 	/* examples: */
-	{ "Gimp_EXAMPLE",				NULL,	0,			1,			-1 }, /* Start on currently visible tags floating, not tiled */
-	{ "firefox_EXAMPLE",			NULL,	1 << 8,		0,			-1 }, /* Start on ONLY tag "9" */
+	{ "Gimp_EXAMPLE",				NULL,						0,			1,			-1 }, /* Start on currently visible tags floating, not tiled */
+	{ "firefox_EXAMPLE",			NULL,						1 << 8,		0,			-1 }, /* Start on ONLY tag "9" */
 
-	{ "xdg-desktop-portal-gtk",		NULL,	0,			1,			-1 }
+	{ "xdg-desktop-portal-gtk",		NULL,						0,			1,			-1 },
+	{ NULL,							"Steam-Einstellungen",		0,			1,			-1 },
+	{ "firefox",					"Library",					0,			1,			-1 },
 };
 
 /* layout(s) */
@@ -53,7 +55,7 @@ static const Layout layouts[] = {
 /* NOTE: ALWAYS add a fallback rule, even if you are completely sure it won't be used */
 static const MonitorRule monrules[] = {
 	/* name	mfact	nmaster	scale	layout			rotate/reflect				x	y */
-	{ NULL,	0.75f,	1,		1,		&layouts[0],	WL_OUTPUT_TRANSFORM_NORMAL,	-1,	-1 },
+	{ NULL,	0.65f,	1,		1,		&layouts[0],	WL_OUTPUT_TRANSFORM_NORMAL,	-1,	-1 },
 };
 
 /* keyboard */
@@ -123,9 +125,11 @@ static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TA
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-static const char *termcmd[] = { "foot", NULL };
+static const char *termcmd[] = { "foot", "-m", "-w 3840x1440", NULL };
 static const char *powercmd[] = { "/home/etc/scripts/power", NULL };
 static const char *menucmd[] = { "/home/etc/scripts/launcher", NULL };
+static const char *clipcopycmd[] = { "/home/etc/scripts/clipboard", "copy", NULL };
+static const char *clipdelcmd[] = { "/home/etc/scripts/clipboard", "delete", NULL };
 static const char *volupcmd[] = { "/home/etc/scripts/vol", "@DEFAULT_AUDIO_SINK@", "+", NULL };
 static const char *voldowncmd[] = { "/home/etc/scripts/vol", "@DEFAULT_AUDIO_SINK@", "-", NULL };
 static const char *shotcmd[] = { "/home/etc/scripts/screenshot", NULL };
@@ -134,6 +138,8 @@ static const char *playertogglecmd[] = { "/home/etc/scripts/player", "play-pause
 static const char *playerprevcmd[] = { "/home/etc/scripts/player", "previous", NULL };
 static const char *playernextcmd[] = { "/home/etc/scripts/player", "next", NULL };
 static const char *togglemiccmd[] = { "/home/etc/scripts/mute", "@DEFAULT_AUDIO_SOURCE@", NULL };
+static const char *notifactioncmd[] = { "makoctl", "menu", "/home/etc/scripts/handle-notif", NULL };
+static const char *notifdismisscmd[] = { "makoctl", "dismiss", NULL };
 
 static const Key keys[] = {
 	/* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
@@ -145,8 +151,8 @@ static const Key keys[] = {
 	{ MODKEY,						XKB_KEY_k,						focusstack,			{.i = +1} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_J,						movestack,			{.i = -1} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_K,						movestack,			{.i = +1} },
-	{ MODKEY,						XKB_KEY_n,						incnmaster,			{.i = +1} },
-	{ MODKEY,						XKB_KEY_m,						incnmaster,			{.i = -1} },
+	{ MODKEY,						XKB_KEY_comma,					incnmaster,			{.i = +1} },
+	{ MODKEY,						XKB_KEY_period,					incnmaster,			{.i = -1} },
 	{ MODKEY,						XKB_KEY_h,						setmfact,			{.f = -0.05f} },
 	{ MODKEY,						XKB_KEY_l,						setmfact,			{.f = +0.05f} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_H,						setcfact,			{.f = -0.25f} },
@@ -176,7 +182,11 @@ static const Key keys[] = {
 	{ 0,							XKB_KEY_XF86AudioPrev,			spawn,				{.v = playerprevcmd} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_S,						spawn,				{.v = shotcmd} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_R,						spawn,				{.v = replaycmd} },
-	{ MODKEY,						XKB_KEY_p,						spawn,				{.v = powercmd} },
+	{ MODKEY,						XKB_KEY_Delete,					spawn,				{.v = powercmd} },
+	{ MODKEY,						XKB_KEY_p,						spawn,				{.v = clipcopycmd} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_P,						spawn,				{.v = clipdelcmd} },
+	{ MODKEY,						XKB_KEY_n,						spawn,				{.v = notifactioncmd} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_N,						spawn,				{.v = notifdismisscmd} },
 	TAGKEYS(		  XKB_KEY_1,	XKB_KEY_exclam,						0),
 	TAGKEYS(		  XKB_KEY_2,	XKB_KEY_quotedbl,					1),
 	TAGKEYS(		  XKB_KEY_3,	XKB_KEY_section,					2),
