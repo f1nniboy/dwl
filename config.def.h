@@ -56,7 +56,7 @@ static const Layout layouts[] = {
 /* NOTE: ALWAYS add a fallback rule, even if you are completely sure it won't be used */
 static const MonitorRule monrules[] = {
 	/* name	mfact	nmaster	scale	layout			rotate/reflect				x	y */
-	{ NULL,	0.65f,	1,		1,		&layouts[0],	WL_OUTPUT_TRANSFORM_NORMAL,	-1,	-1 },
+	{ NULL,	0.7f,	1,		1,		&layouts[0],	WL_OUTPUT_TRANSFORM_NORMAL,	-1,	-1 },
 };
 
 /* keyboard */
@@ -122,44 +122,23 @@ static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TA
 	{ MODKEY|WLR_MODIFIER_SHIFT, SKEY,           tag,             {.ui = 1 << TAG} }, \
 	{ MODKEY|WLR_MODIFIER_CTRL|WLR_MODIFIER_SHIFT,SKEY,toggletag, {.ui = 1 << TAG} }
 
-/* helper for spawning shell commands in the pre dwm-5.0 fashion */
-#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
-
-/* commands */
-static const char *termcmd[] = { "foot", "-m", "-w 3840x1440", NULL };
-static const char *powercmd[] = { "/home/etc/scripts/power", NULL };
-static const char *menucmd[] = { "/home/etc/scripts/launcher", NULL };
-static const char *wallpapercmd[] = { "/home/etc/scripts/wallpaper", NULL };
-static const char *clipcopycmd[] = { "/home/etc/scripts/clipboard", "copy", NULL };
-static const char *clipdelcmd[] = { "/home/etc/scripts/clipboard", "delete", NULL };
-static const char *volupcmd[] = { "/home/etc/scripts/volume", "@DEFAULT_AUDIO_SINK@", "+", NULL };
-static const char *voldowncmd[] = { "/home/etc/scripts/volume", "@DEFAULT_AUDIO_SINK@", "-", NULL };
-static const char *shotcmd[] = { "/home/etc/scripts/screenshot", NULL };
-static const char *replaycmd[] = { "/home/etc/scripts/save-replay", NULL };
-static const char *playertogglecmd[] = { "playerctl", "play-pause", NULL };
-static const char *playerprevcmd[] = { "playerctl", "previous", NULL };
-static const char *playernextcmd[] = { "playerctl", "next", NULL };
-static const char *togglemiccmd[] = { "/home/etc/scripts/mute", "@DEFAULT_AUDIO_SOURCE@", NULL };
-static const char *notifactioncmd[] = { "makoctl", "menu", "/home/etc/scripts/handle-notif", NULL };
-static const char *notifdismisscmd[] = { "makoctl", "dismiss", NULL };
+#define CMD(...) { .v = (const char*[]){ __VA_ARGS__, NULL } }
 
 static const Key keys[] = {
 	/* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
 	/* modifier					 	key				 				function			argument */
-	{ MODKEY,						XKB_KEY_Return,					spawn,				{.v = menucmd} },
-	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_Return,					spawn,				{.v = termcmd} },
+	{ MODKEY,						XKB_KEY_Return,					spawn,				CMD("/home/etc/scripts/launcher") },
+	/* starting at full screen resolution fixes the flickering issue https://codeberg.org/dwl/dwl/issues/705 */
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_Return,					spawn,				CMD("foot", "-m", "-w 3440x1440") },
 	{ MODKEY,						XKB_KEY_b,						togglebar,			{0} },
 	{ MODKEY,						XKB_KEY_j,						focusstack,			{.i = -1} },
 	{ MODKEY,						XKB_KEY_k,						focusstack,			{.i = +1} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_J,						movestack,			{.i = -1} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_K,						movestack,			{.i = +1} },
-	{ MODKEY,						XKB_KEY_comma,					incnmaster,			{.i = +1} },
-	{ MODKEY,						XKB_KEY_period,					incnmaster,			{.i = -1} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_H,						incnmaster,			{.i = +1} },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_L,						incnmaster,			{.i = -1} },
 	{ MODKEY,						XKB_KEY_h,						setmfact,			{.f = -0.05f} },
 	{ MODKEY,						XKB_KEY_l,						setmfact,			{.f = +0.05f} },
-	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_H,						setcfact,			{.f = -0.25f} },
-	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_L,						setcfact,			{.f = +0.25f} },
-	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_M,						setcfact,			{.f = 0.0f} },
 	{ MODKEY,						XKB_KEY_space,					zoom,				{0} },
 	{ MODKEY,						XKB_KEY_Tab,					view,				{0} },
 	{ MODKEY,						XKB_KEY_q,						killclient,			{0} },
@@ -177,19 +156,20 @@ static const Key keys[] = {
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_less,					tagmon,				{.i = WLR_DIRECTION_LEFT} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_greater,				tagmon,				{.i = WLR_DIRECTION_RIGHT} },
 	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_Q,						quit,				{0} },
-	{ 0,							XKB_KEY_XF86AudioRaiseVolume,	spawn,				{.v = volupcmd} },
-	{ 0,							XKB_KEY_XF86AudioLowerVolume,	spawn,				{.v = voldowncmd} },
-	{ 0,							XKB_KEY_XF86AudioPlay,			spawn,				{.v = playertogglecmd} },
-	{ 0,							XKB_KEY_XF86AudioNext,			spawn,				{.v = playernextcmd} },
-	{ 0,							XKB_KEY_XF86AudioPrev,			spawn,				{.v = playerprevcmd} },
-	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_S,						spawn,				{.v = shotcmd} },
-	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_R,						spawn,				{.v = replaycmd} },
-	{ MODKEY,						XKB_KEY_Delete,					spawn,				{.v = powercmd} },
-	{ MODKEY,						XKB_KEY_w,						spawn,				{.v = wallpapercmd} },
-	{ MODKEY,						XKB_KEY_p,						spawn,				{.v = clipcopycmd} },
-	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_P,						spawn,				{.v = clipdelcmd} },
-	{ MODKEY,						XKB_KEY_n,						spawn,				{.v = notifactioncmd} },
-	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_N,						spawn,				{.v = notifdismisscmd} },
+	{ 0,							XKB_KEY_XF86AudioRaiseVolume,	spawn,				CMD("/home/etc/scripts/volume", "@DEFAULT_AUDIO_SINK@", "+") },
+	{ 0,							XKB_KEY_XF86AudioLowerVolume,	spawn,				CMD("/home/etc/scripts/volume", "@DEFAULT_AUDIO_SINK@", "-") },
+	{ 0,							XKB_KEY_XF86AudioPlay,			spawn,				CMD("playerctl", "play-pause") },
+	{ 0,							XKB_KEY_XF86AudioNext,			spawn,				CMD("playerctl", "next") },
+	{ 0,							XKB_KEY_XF86AudioPrev,			spawn,				CMD("playerctl", "previous") },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_S,						spawn,				CMD("/home/etc/scripts/screenshot") },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_R,						spawn,				CMD("/home/etc/scripts/save-replay") },
+	{ MODKEY,						XKB_KEY_Delete,					spawn,				CMD("/home/etc/scripts/power") },
+	{ MODKEY,						XKB_KEY_w,						spawn,				CMD("/home/etc/scripts/wallpaper") },
+	{ MODKEY,						XKB_KEY_e,						spawn,				CMD("/home/etc/scripts/emoji") },
+	{ MODKEY,						XKB_KEY_p,						spawn,				CMD("/home/etc/scripts/clipboard", "copy") },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_P,						spawn,				CMD("/home/etc/scripts/clipboard", "delete") },
+	{ MODKEY,						XKB_KEY_n,						spawn,				CMD("makoctl", "menu", "/home/etc/scripts/handle-notif") },
+	{ MODKEY|WLR_MODIFIER_SHIFT,	XKB_KEY_N,						spawn,				CMD("makoctl dismiss") },
 	TAGKEYS(		  XKB_KEY_1,	XKB_KEY_exclam,						0),
 	TAGKEYS(		  XKB_KEY_2,	XKB_KEY_quotedbl,					1),
 	TAGKEYS(		  XKB_KEY_3,	XKB_KEY_section,					2),
@@ -215,5 +195,5 @@ static const Button buttons[] = {
 	{ MODKEY,	BTN_LEFT,	moveresize,		{.ui = CurMove} },
 	{ MODKEY,	BTN_MIDDLE,	togglefloating,	{0} },
 	{ MODKEY,	BTN_RIGHT,	moveresize,		{.ui = CurResize} },
-	{ 0,		BTN_EXTRA,	spawn,			{.v = togglemiccmd } },
+	{ 0,		BTN_EXTRA,	spawn,			CMD("/home/etc/scripts/mute", "@DEFAULT_AUDIO_SOURCE@") },
 };
