@@ -1693,6 +1693,12 @@ void
 fullscreennotify(struct wl_listener *listener, void *data)
 {
 	Client *c = wl_container_of(listener, c, fullscreen);
+
+	/* all of my remaining x11 apps are games anyway, and some want to
+	 * constantly be in fullscreen */
+	if (c->type == X11)
+		return;
+
 	setfullscreen(c, client_wants_fullscreen(c));
 }
 
